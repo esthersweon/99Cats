@@ -72,15 +72,16 @@ class CatRentalRequest < ActiveRecord::Base
     overlapping_requests.where("status = 'PENDING'")
   end
 
-  def no_overlapping_approved_request
-    return if self.status == "DENIED"
-  end
-
   private
 
   def assign_pending
     self.status ||= "PENDING"
+  end
 
+  def no_overlapping_approved_request
+    return if self.status == "DENIED"
+
+    # DISPLAY THIS ERROR BETTER
     if !overlapping_approved_requests.empty?
       errors[:base] << "There is a conflicting approved request."
     end
