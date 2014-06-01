@@ -19,9 +19,10 @@ class CatRentalRequest < ActiveRecord::Base
   STATUSES = %w[APPROVED PENDING DENIED]
 
   validates :status, inclusion: { :in => STATUSES }
-  validate :no_overlapping_approved_requests
+  validate :no_overlapping_approved_request
 
   def approve!
+    
     self.transaction do
        self.status = "APPROVED"
        self.save!
@@ -29,8 +30,8 @@ class CatRentalRequest < ActiveRecord::Base
        overlapping_pending_requests.each do |request|
          request.deny!
        end
-       
     end
+
   end
 
   def deny!
@@ -39,34 +40,48 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def overlapping_requests
-    self.class.find_by_sql([<<-SQL, {own_start_date: self.start_date, own_end_date: self.end_date, own_cat_id: self.cat_id, own_id: self.id}])
-    SELECT
-      *
-    FROM
-      cat_rental_requests
-    WHERE
-      ((start_date BETWEEN :own_start_date AND :own_end_date) OR
-      (end_date BETWEEN :own_start_date AND :own_end_date)) AND
-      (cat_id = :own_cat_id) AND (id != :own_id)
+    conditions = <<-SQL
+      ((start_date BETWEEN :start_date AND :end_date) OR
+      (end_date BETWEEN :start_date AND :end_date)) AND
+      (cat_id = :cat_id)
     SQL
+
+    overlapping_requests = CatRentalRequest.where(conditions, {
+      cat_id: self.cat_id, 
+      start_date: self.start_date, 
+      end_date: self.end_date
+      id: self.id
+    })
+
+  if self.id.nil?
+    overlapping_requests
+  else
+    overlapping_requests.where("id != ?", self.id)
   end
 
-  def no_overlapping_approved_requests
-   if !overlapping_requests.select{|request| request.status == "APPROVED"}.empty?
-     errors[:overlapping] << "An overlapping approved request exists."
-   end
-   nil
+  end
+
+  def overlapping_approved_requests
+   overlapping_requests.where("status" = "APPROVED")
   end
 
   def overlapping_pending_requests
-    overlapping_requests.select{|request| request.status == "PENDING"}
+    overlapping_requests.where("status" = "PENDING")
+  end
+
+  def no_overlapping_approved_request
+    return if self.status == "DENIED"
   end
 
   private
 
   def assign_pending
     self.status ||= "PENDING"
-  end
 
+    if !overlapping_approved_requests.empty?
+      errors[:base] << "There is a conflicting approved request."
+    end
+
+  end
 
 end
