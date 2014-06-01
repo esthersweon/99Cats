@@ -5,13 +5,15 @@
 
 </head>
 <body>
-
-<% if logged_in?%>
-  <%= "Hello, #{current_user.user_name}" %>
-  <%=button_to "Logout", session_url, :method => :delete %>
-<% else %>
-  <%=link_to "Login", new_session_url%>
-<%end%>
+<h2>NinetyNineCats   
+	<% if logged_in?%>
+	  - <%= "Hello, #{current_user.user_name}" %>
+	  <%=button_to "Logout", session_url, :method => :delete %>
+	<% else %>
+	  - <%=link_to "Login", new_session_url%>
+	  - <%= link_to "Sign Up", new_user_url%>
+	<%end%>
+</h2>
 
 <%= yield %>
 

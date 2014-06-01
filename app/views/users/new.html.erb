@@ -1,15 +1,17 @@
-<h2>Signup for a new account</h2>
+<h2>Sign Up</h2>
 
-<form action=<%= session_url %> method="POST">
+<form action="<%= users_url %>" method="POST">
 
-<%= auth_token_input %>
+	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
 
-<label for="user_name">Name:</label>
-<input type = "text" name = "user[user_name]" id = "user_name">
+	<label>Name:
+		<input type = "text" name = "user[user_name]">
+	</label>
 
-<label for="password">Password:</label>
-<input type = "password" name = "user[password]" id = "password">
+	<label>Password: 
+		<input type = "password" name = "user[password]">
+	</label>
 
-<input type="submit" value="Sign Up">
+	<input type="submit" value="Sign Up">
 
 </form>

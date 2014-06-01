@@ -1,6 +1,6 @@
 NinetyNineCats::Application.routes.draw do
 
-  root to: "cats#index"
+  root to: "sessions#new"
 
   resources :cats
   resources :cat_rental_requests, only: [:create, :delete, :new] do

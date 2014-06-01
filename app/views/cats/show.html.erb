@@ -28,13 +28,15 @@
           <td><%=rental.start_date%></td>
           <td><%=rental.end_date%></td>
           <td>
-              <% if rental_pending?(rental) %>
+              <% if rental.pending? %>
                 <%= button_to "Approve",
                     approve_cat_rental_request_url(rental),
                     :method => :patch %>
                 <%= button_to "Deny",
                     deny_cat_rental_request_url(rental),
                     :method => :patch %>
+              <% else %>
+                <%= rental.status %>
               <% end %>
           </td>
         </tr>
@@ -43,4 +45,7 @@
 
   </table>
 <% end %>
+
+<br>
+<%= link_to "Back to All Cats", cats_url %>
 

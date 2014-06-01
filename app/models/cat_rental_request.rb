@@ -21,6 +21,10 @@ class CatRentalRequest < ActiveRecord::Base
   validates :status, inclusion: { :in => STATUSES }
   validate :no_overlapping_approved_request
 
+  def pending?
+    self.status == "PENDING"
+  end
+
   def approve!
     
     self.transaction do
@@ -41,16 +45,15 @@ class CatRentalRequest < ActiveRecord::Base
 
   def overlapping_requests
     conditions = <<-SQL
-      ((start_date BETWEEN :start_date AND :end_date) OR
-      (end_date BETWEEN :start_date AND :end_date)) AND
-      (cat_id = :cat_id)
+    ((start_date BETWEEN :start_date AND :end_date) 
+    OR (end_date BETWEEN :start_date AND :end_date))
+    AND (cat_id = :cat_id) 
     SQL
 
     overlapping_requests = CatRentalRequest.where(conditions, {
       cat_id: self.cat_id, 
       start_date: self.start_date, 
-      end_date: self.end_date,
-      id: self.id
+      end_date: self.end_date
     })
 
   if self.id.nil?

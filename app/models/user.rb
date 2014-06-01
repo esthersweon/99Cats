@@ -11,10 +11,17 @@
 #
 
 class User < ActiveRecord::Base
-
-  validates :user_name, :password_digest, :session_token, presence: :true
-
+  attr_reader :password
   before_validation :ensure_session_token
+  validates :user_name, :password_digest, :session_token, presence: true
+  validates :session_token, :user_name, uniqueness: true
+
+  def self.find_by_credentials(user_name, password)
+    user = User.find_by(user_name: user_name)
+
+    return nil if user.nil?
+    user.is_password?(password) ? user : nil
+  end
 
   def ensure_session_token
     self.session_token ||= SecureRandom.hex
@@ -27,18 +34,19 @@ class User < ActiveRecord::Base
   end
 
   def password=(plain_text)
-    @password = plain_text
-    self.password_digest = BCrypt::Password.create(plain_text)
+    if plain_text.present?
+      @password = plain_text
+      self.password_digest = BCrypt::Password.create(plain_text)
+    end
   end
 
   def is_password?(password)
-    BCrypt::Password.new(password_digest).is_password?(password)
+    BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
-  def self.find_by_credentials(user_name, password)
-    user = User.find_by(:user_name => user_name)
-    return user if user.try(:is_password?, password)
+  private
+
+  def ensure_session_token
+    self.session_token ||= SecureRandom.hex
   end
-
-
 end
