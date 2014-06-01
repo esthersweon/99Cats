@@ -1,17 +1,17 @@
 NinetyNineCats::Application.routes.draw do
 
-  root to: "sessions#new"
+  root to: "cats#index"
 
-  resources :cats
-  resources :cat_rental_requests, only: [:create, :delete, :new] do
+  resources :cats, except: [:destroy]
+  resources :cat_rental_requests, only: [:create, :new] do
     member do
       patch 'approve'
       patch 'deny'
     end
   end
 
-  resources :users, :only => [:new, :create]
+  resources :users, only: [:new, :create]
 
-  resource :session
+  resource :session, only: [:create, :destroy, :new]
 
 end

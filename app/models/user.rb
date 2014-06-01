@@ -44,6 +44,10 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
+  def owns_cat?(cat)
+    cat.user_id == self.id
+  end
+
   private
 
   def ensure_session_token

@@ -1,4 +1,5 @@
 class CatsController < ApplicationController
+  before_action :require_user!
 
   def index
     @cats = Cat.all
@@ -11,7 +12,7 @@ class CatsController < ApplicationController
   end
 
   def create
-    @cat = Cat.new(cat_params)
+    @cat = current_user.cats.new(cat_params)
     if @cat.save
       redirect_to cat_url @cat
     else
@@ -35,10 +36,7 @@ class CatsController < ApplicationController
     @cat.update_attributes(cat_params)
     redirect_to cat_url(@cat)
   end
-
-  def destroy
-  end
-
+  
   private
 
   def cat_params

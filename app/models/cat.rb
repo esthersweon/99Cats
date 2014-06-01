@@ -14,7 +14,7 @@
 #
 
 class Cat < ActiveRecord::Base
-  validates :age, :birth_date, :name, :color, :sex, :presence => true
+  validates :age, :birth_date, :name, :color, :sex, :user_id, :presence => true
   validates :age, :numericality => true
 
   COLORS = %w[blue grey brown black]
