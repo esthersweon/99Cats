@@ -49,7 +49,7 @@ class CatRentalRequest < ActiveRecord::Base
     overlapping_requests = CatRentalRequest.where(conditions, {
       cat_id: self.cat_id, 
       start_date: self.start_date, 
-      end_date: self.end_date
+      end_date: self.end_date,
       id: self.id
     })
 
@@ -62,11 +62,11 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def overlapping_approved_requests
-   overlapping_requests.where("status" = "APPROVED")
+   overlapping_requests.where("status = 'APPROVED'")
   end
 
   def overlapping_pending_requests
-    overlapping_requests.where("status" = "PENDING")
+    overlapping_requests.where("status = 'PENDING'")
   end
 
   def no_overlapping_approved_request
