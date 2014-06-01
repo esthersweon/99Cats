@@ -1,0 +1,39 @@
+<%if @cat.persisted?%>
+  <% right_url = cat_url(@cat) %>
+<%else%>
+  <% right_url = cats_url %>
+<%end%>
+
+<form action=<%= right_url %> method="POST">
+
+<%if @cat.persisted?%>
+ <input type="hidden" value="PATCH" name="_method">
+<%end%>
+
+<label for="cat_name">Name:</label>
+<input type = "text" name = "cat[name]" id = "cat_name" value=<%= @cat.name %>> <br />
+<label for="cat_color">Color:</label>
+<select name = "cat[color]" id = "cat_color"><br />
+    <option></option>
+    <% Cat::COLORS.each do |color_name| %>
+       <option value=<%=color_name.capitalize%>
+         <%= ", selected='selected'" if @cat.color == color_name %>>
+         <%= color_name %></option>
+    <% end %>
+  </select>
+  <br />
+<label for="cat_age">Age:</label>
+<input type = "integer" name = "cat[age]" id = "cat_age", value=<%= @cat.age %>><br />
+<label for="cat_birth_date">Birthday:</label>
+<input type = "date" name = "cat[birth_date]" id = "cat_birth_date" value=<%= @cat.birth_date %>><br />
+
+<input type="radio" name="cat[sex]" id="cat_sex_female" value="f",
+  <%=", checked='checked'" if @cat.sex == "f" %>>
+<label for="cat_sex_female">Female</label>
+<input type="radio" name="cat[sex]" id="cat_sex_male" value="m"
+  <%=", checked='checked'" if @cat.sex == "m" %>>
+<label for="cat_sex_male">Male</label>
+
+<br />
+<input type="submit" value="Birth Cat">
+</form>
