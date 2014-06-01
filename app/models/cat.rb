@@ -14,13 +14,14 @@
 #
 
 class Cat < ActiveRecord::Base
-  COLORS = %w[Blue Grey Brown Black]
-  SEX = %w[m f]
-
-  validates :color, :inclusion => {:in => COLORS}
-  validates :sex, :inclusion => {:in => SEX}
   validates :age, :birth_date, :name, :color, :sex, :presence => true
   validates :age, :numericality => true
+
+  COLORS = %w[blue grey brown black]
+  SEX = %w[M F]
+
+  validates :color, inclusion: {:in => COLORS}
+  validates :sex, inclusion: {:in => SEX}
 
   has_many :cat_rental_requests, :dependent => :destroy
 end

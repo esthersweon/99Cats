@@ -1,39 +1,45 @@
 <%if @cat.persisted?%>
-  <% right_url = cat_url(@cat) %>
+  <% form_action_url = cat_url(@cat) %>
 <%else%>
-  <% right_url = cats_url %>
+  <% form_action_url = cats_url %>
 <%end%>
 
-<form action=<%= right_url %> method="POST">
+<form action="<%= form_action_url %>" method="POST">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
 
-<%if @cat.persisted?%>
- <input type="hidden" value="PATCH" name="_method">
-<%end%>
+  <% if @cat.persisted? %>
+    <input type="hidden" value="PATCH" name="_method">
+  <% end %>
 
-<label for="cat_name">Name:</label>
-<input type = "text" name = "cat[name]" id = "cat_name" value=<%= @cat.name %>> <br />
-<label for="cat_color">Color:</label>
-<select name = "cat[color]" id = "cat_color"><br />
-    <option></option>
-    <% Cat::COLORS.each do |color_name| %>
-       <option value=<%=color_name.capitalize%>
-         <%= ", selected='selected'" if @cat.color == color_name %>>
-         <%= color_name %></option>
-    <% end %>
-  </select>
-  <br />
-<label for="cat_age">Age:</label>
-<input type = "integer" name = "cat[age]" id = "cat_age", value=<%= @cat.age %>><br />
-<label for="cat_birth_date">Birthday:</label>
-<input type = "date" name = "cat[birth_date]" id = "cat_birth_date" value=<%= @cat.birth_date %>><br />
+  <label>Name:
+  <input type = "text" name = "cat[name]" value="<%= @cat.name %>"></label>
 
-<input type="radio" name="cat[sex]" id="cat_sex_female" value="f",
-  <%=", checked='checked'" if @cat.sex == "f" %>>
-<label for="cat_sex_female">Female</label>
-<input type="radio" name="cat[sex]" id="cat_sex_male" value="m"
-  <%=", checked='checked'" if @cat.sex == "m" %>>
-<label for="cat_sex_male">Male</label>
+  <label>Color:
+    <select name = "cat[color]" id = "cat_color"><br />
+      <option></option>
+      <% Cat::COLORS.each do |color| %>
+         <option value="<%= color %>"
+           <%= @cat.color == color ? "selected" : "" %>>
+           <%= color %></option>
+      <% end %>
+    </select>
+  </label>
 
-<br />
-<input type="submit" value="Birth Cat">
+  <label>Age:
+  <input type = "integer" name = "cat[age]", value="<%= @cat.age %>"></label>
+
+  <label>Birthday:
+  <input type = "date" name = "cat[birth_date]" value="<%= @cat.birth_date %>"></label>
+
+  <label>Female
+    <input type="radio" name="cat[sex]" value="F"
+    <%= @cat.sex == "F" ? "checked" : "" %>>
+  </label>
+
+ <label>Male
+  <input type="radio" name="cat[sex]" value="M"
+    <%= @cat.sex == "M" ? "checked" : "" %>>
+  </label>
+
+  <input type="submit" value="Make Cat">
 </form>

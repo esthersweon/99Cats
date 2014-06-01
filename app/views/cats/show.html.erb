@@ -4,10 +4,15 @@
     <th>Attribute</th>
     <th>Value</th>
   </tr>
-<% @cat.attributes.each do |attribute, value| %>
-<tr><td><%= attribute %>:</td> <td><%= value %><td></tr>
-<% end %>
+
+  <% @cat.attributes.each do |attribute, value| %>
+    <tr>
+      <td><%= attribute %>:</td>
+      <td><%= value %><td>
+    </tr>
+  <% end %>
 </table>
+
 <%unless @rental_dates.empty? %>
   <h3>Rental Dates</h3>
   <table>
@@ -15,6 +20,7 @@
       <th>Start Date</th>
       <th>End Date</th>
     </tr>
+
     <% @rental_dates.each do |rental| %>
       <% unless rental.status == "DENIED" %>
         <tr>
@@ -33,6 +39,7 @@
         </tr>
       <% end %>
     <% end %>
+    
   </table>
 <% end %>
 
